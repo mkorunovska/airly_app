@@ -15,7 +15,7 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
-    _timer = Timer(Duration(seconds: 5), () {
+    _timer = Timer(Duration(seconds: 3), () {
       Navigator.pushNamed(context, "/introduction");
     });
   }

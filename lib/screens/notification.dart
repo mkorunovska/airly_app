@@ -1,3 +1,4 @@
+import 'package:airly_app/widgets/circle_stack.dart';
 import 'package:flutter/material.dart';
 
 class NotificationPage extends StatelessWidget {
@@ -11,28 +12,8 @@ class NotificationPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Stack(
-              alignment: AlignmentGeometry.center,
-              children: [
-                CircleAvatar(
-                  radius: 80,
-                  backgroundColor: const Color.fromARGB(255, 159, 164, 181),
-                ),
-                CircleAvatar(
-                  radius: 60,
-                  backgroundColor: const Color.fromARGB(255, 206, 210, 221),
-                ),
-                CircleAvatar(
-                  radius: 40,
-                  backgroundColor: const Color.fromARGB(255, 228, 231, 237),
-                ),
-                Icon(
-                  Icons.notifications,
-                  size: 30,
-                  color: Color.fromARGB(255, 8, 9, 42),
-                ),
-              ],
-            ),
+
+            CircleStack(icon: Icons.notifications),
 
             SizedBox(height: 120),
 
@@ -61,7 +42,7 @@ class NotificationPage extends StatelessWidget {
 
             ElevatedButton(
               onPressed: () {
-                Navigator.pushNamed(context, "/locations");
+                Navigator.pushNamed(context, "/location");
               },
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size(260, 45),
@@ -80,14 +61,20 @@ class NotificationPage extends StatelessWidget {
 
             SizedBox(height: 10),
 
-            Text(
-              "DECLINE",
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w300,
-                color: Color.fromARGB(255, 247, 248, 253),
+            TextButton(
+              onPressed: () {
+                Navigator.pushNamed(context, "/location");
+              },
+              child: Text(
+                "DECLINE",
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w300,
+                  color: Color.fromARGB(255, 247, 248, 253),
+                ),
               ),
             ),
+
           ],
         ),
       ),

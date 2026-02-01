@@ -1,4 +1,7 @@
-import 'package:airly_app/screens/locations.dart';
+import 'package:airly_app/screens/cites_list.dart';
+import 'package:airly_app/screens/details.dart';
+import 'package:airly_app/screens/location.dart';
+import 'package:airly_app/screens/map.dart';
 import 'package:airly_app/screens/notification.dart';
 import 'package:airly_app/screens/on_boarding.dart';
 import 'package:airly_app/screens/splash.dart';
@@ -24,7 +27,10 @@ class MyApp extends StatelessWidget {
         '/splash': (context) => const SplashPage(),
         '/introduction': (context) => const OnBoardingPage(),
         '/notification': (context) => const NotificationPage(),
-        '/locations': (context) => const LocationsPage(),
+        '/location': (context) => const LocationPage(),
+        '/details': (context) => const DetailsPage(),
+        '/cities': (context) => const CitesListPage(),
+        '/map': (context) => const MapPage()
       },
     );
   }
