@@ -1,4 +1,5 @@
-import 'package:airly_app/screens/cites_list.dart';
+import 'package:airly_app/screens/citites.dart';
+import 'package:airly_app/widgets/cites_list.dart';
 import 'package:airly_app/screens/details.dart';
 import 'package:airly_app/screens/location.dart';
 import 'package:airly_app/screens/map.dart';
@@ -29,7 +30,7 @@ class MyApp extends StatelessWidget {
         '/notification': (context) => const NotificationPage(),
         '/location': (context) => const LocationPage(),
         '/details': (context) => const DetailsPage(),
-        '/cities': (context) => const CitesListPage(),
+        '/cities': (context) => const CitiesPage(),
         '/map': (context) => const MapPage()
       },
     );
