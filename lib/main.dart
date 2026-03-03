@@ -1,5 +1,4 @@
 import 'package:airly_app/screens/citites.dart';
-import 'package:airly_app/widgets/cites_list.dart';
 import 'package:airly_app/screens/details.dart';
 import 'package:airly_app/screens/location.dart';
 import 'package:airly_app/screens/map.dart';
@@ -8,7 +7,8 @@ import 'package:airly_app/screens/on_boarding.dart';
 import 'package:airly_app/screens/splash.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+void main(){
+
   runApp(const MyApp());
 }
 

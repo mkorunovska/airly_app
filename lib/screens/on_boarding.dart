@@ -1,7 +1,8 @@
-import 'package:airly_app/screens/intro_screens/intor_page_3.dart';
+import 'package:airly_app/screens/intro_screens/intro_page_3.dart';
 import 'package:airly_app/screens/intro_screens/intro_page_1.dart';
 import 'package:airly_app/screens/intro_screens/intro_page_2.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class OnBoardingPage extends StatefulWidget {
@@ -55,8 +56,16 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 
                 onLastPage
                     ? GestureDetector(
-                        onTap: () {
-                          Navigator.pushNamed(context, '/notification');
+                        onTap: () async{
+                          final pres = await SharedPreferences.getInstance();
+                          await pres.setBool("onboarding", true);
+
+                          //After we press done, this onboarding value becomes true
+
+                          if(!mounted) return;
+
+                          // Navigator.pushNamed(context, '/notification');
+                           Navigator.pushReplacementNamed(context, '/notification');
                         },
                         child: Text(
                           "Done",

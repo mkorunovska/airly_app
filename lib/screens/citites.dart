@@ -1,5 +1,4 @@
 import 'package:airly_app/widgets/cites_list.dart';
-import 'package:airly_app/widgets/city_container.dart';
 import 'package:flutter/material.dart';
 
 class CitiesPage extends StatefulWidget {

@@ -1,9 +1,15 @@
 import 'package:airly_app/widgets/circle_stack.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class NotificationPage extends StatelessWidget {
+class NotificationPage extends StatefulWidget {
   const NotificationPage({super.key});
 
+  @override
+  State<NotificationPage> createState() => _NotificationPageState();
+}
+
+class _NotificationPageState extends State<NotificationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,8 +47,15 @@ class NotificationPage extends StatelessWidget {
             SizedBox(height: 30),
 
             ElevatedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, "/location");
+              onPressed: () async {
+                final pres = await SharedPreferences.getInstance();
+                await pres.setBool("notification", true);
+
+                //After we press done, this onboarding value becomes true
+
+                if(!mounted) return;
+
+                Navigator.pushReplacementNamed(context, '/location');
               },
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size(260, 45),

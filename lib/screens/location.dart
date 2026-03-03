@@ -1,9 +1,15 @@
 import 'package:airly_app/widgets/circle_stack.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class LocationPage extends StatelessWidget {
+class LocationPage extends StatefulWidget {
   const LocationPage({super.key});
 
+  @override
+  State<LocationPage> createState() => _LocationPageState();
+}
+
+class _LocationPageState extends State<LocationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,8 +46,16 @@ class LocationPage extends StatelessWidget {
             SizedBox(height: 30),
 
             ElevatedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, "/details");
+              onPressed: () async {
+                final pres = await SharedPreferences.getInstance();
+                await pres.setBool("location", true);
+
+                //After we press done, this onboarding value becomes true
+
+                if(!mounted) return;
+
+                Navigator.pushReplacementNamed(context, '/details');
+                
               },
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size(260, 45),
