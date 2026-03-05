@@ -22,17 +22,14 @@ class _SplashPageState extends State<SplashPage> {
     final prefs = await SharedPreferences.getInstance();
 
     final onboardingDone = prefs.getBool("onboarding") ?? false;
-    final notificationDone = prefs.getBool("notification") ?? false;
     final locationDone = prefs.getBool("location") ?? false;
 
     if (!mounted) return;
 
     if (!onboardingDone) {
       Navigator.pushReplacementNamed(context, "/introduction");
-    } else if (!notificationDone) {
-      Navigator.pushReplacementNamed(context, "/notification");
-    } else if (!locationDone){
-      Navigator.pushReplacementNamed(context, "/location"); // or your real home page
+    } else if (!locationDone) {
+      Navigator.pushReplacementNamed(context, "/location");
     }else{
       Navigator.pushReplacementNamed(context, "/details");
     }

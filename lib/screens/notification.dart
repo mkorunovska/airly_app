@@ -1,4 +1,5 @@
 import 'package:airly_app/widgets/circle_stack.dart';
+import 'package:airly_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -12,6 +13,7 @@ class NotificationPage extends StatefulWidget {
 class _NotificationPageState extends State<NotificationPage> {
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 8, 9, 42),
       body: Center(
@@ -24,7 +26,7 @@ class _NotificationPageState extends State<NotificationPage> {
             SizedBox(height: 120),
 
             Text(
-              'Air Quality Notifications',
+              t.t('air_quality_notifications'),
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w500,
@@ -35,7 +37,7 @@ class _NotificationPageState extends State<NotificationPage> {
             SizedBox(height: 15),
 
             Text(
-              'We need your authorization to send you alerts and pollution reports',
+              t.t('notif_desc'),
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 13,
@@ -51,18 +53,17 @@ class _NotificationPageState extends State<NotificationPage> {
                 final pres = await SharedPreferences.getInstance();
                 await pres.setBool("notification", true);
 
-                //After we press done, this onboarding value becomes true
-
                 if(!mounted) return;
 
                 Navigator.pushReplacementNamed(context, '/location');
+                
               },
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size(260, 45),
                 backgroundColor: const Color.fromARGB(255, 245, 249, 255),
               ),
               child: Text(
-                "ALLOW",
+                t.t('allow'),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 13,
@@ -79,7 +80,7 @@ class _NotificationPageState extends State<NotificationPage> {
                 Navigator.pushNamed(context, "/location");
               },
               child: Text(
-                "DECLINE",
+                t.t('decline'),
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w300,

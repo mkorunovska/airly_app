@@ -60,12 +60,9 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                           final pres = await SharedPreferences.getInstance();
                           await pres.setBool("onboarding", true);
 
-                          //After we press done, this onboarding value becomes true
-
                           if(!mounted) return;
 
-                          // Navigator.pushNamed(context, '/notification');
-                           Navigator.pushReplacementNamed(context, '/notification');
+                           Navigator.pushReplacementNamed(context, '/location');
                         },
                         child: Text(
                           "Done",

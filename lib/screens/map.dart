@@ -1,4 +1,10 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
+import '../models/city.dart';
+import '../services/city_weather_icon_service.dart';
 
 class MapPage extends StatefulWidget {
   const MapPage({super.key});
@@ -8,66 +14,114 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPageState extends State<MapPage> {
-  int _selectedIndex = 2;
+  final MapController _mapController = MapController();
 
-  void _navigateBottomBar(int index) {
+  List<City> _cities = [];
+  final List<Marker> _markers = [];
+
+  // Cache so we don't refetch again if user returns to this screen
+  final Map<String, WeatherIconType> _iconCache = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCitiesThenMarkers();
+  }
+
+  Future<void> _loadCitiesThenMarkers() async {
+    final raw = await rootBundle.loadString('assets/cities_mk.json');
+    final List data = jsonDecode(raw);
+
+    final cities = data.map((e) => City.fromJson(e)).toList();
+
     setState(() {
-      _selectedIndex = index;
+      _cities = cities;
+      _markers.clear(); // clear old markers
     });
 
-    if (index == 0) {
-      Navigator.pushNamed(context, "/details");
-    } else if (index == 1) {
-      Navigator.pushNamed(context, "/cities");
+    // Build markers gradually so UI doesn't freeze
+    for (final city in cities) {
+      final iconType = await _getCityIconType(city);
+      final marker = _buildMarker(city, iconType);
+
+      if (!mounted) return;
+      setState(() => _markers.add(marker));
     }
+  }
+
+  Future<WeatherIconType> _getCityIconType(City city) async {
+    // cache key could be name or lat/lon
+    final key = city.name;
+
+    if (_iconCache.containsKey(key)) return _iconCache[key]!;
+
+    final iconType = await CityWeatherIconService.fetchIconType(
+      lat: city.lat,
+      lon: city.lon,
+    );
+
+    _iconCache[key] = iconType;
+    return iconType;
+  }
+
+  Marker _buildMarker(City city, WeatherIconType iconType) {
+    final String assetPath = switch (iconType) {
+      WeatherIconType.sun => 'assets/map_icons/weather_sunny.png',
+      WeatherIconType.cloud => 'assets/map_icons/weather_cloudy.png',
+      WeatherIconType.rain => 'assets/map_icons/weather_rainy.png',
+       WeatherIconType.storm => 'assets/map_icons/weather_storm.png',
+      WeatherIconType.snow => 'assets/map_icons/weather_snow.png',
+    };
+
+    return Marker(
+      width: 100,
+      height: 100,
+      point: LatLng(city.lat, city.lon),
+      child: GestureDetector(
+        onTap: () {
+          Navigator.pushNamed(context, '/details', arguments: city);
+        },
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset(assetPath, width: 38, height: 38),
+            const SizedBox(height: 2),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.9),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Text(
+                city.name,
+                style: const TextStyle(fontSize: 10),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 8, 9, 42),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: SizedBox(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 70),
-
-              Text(
-                "Map",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                  color: Colors.white,
-                ),
-              ),
-
-              SizedBox(height: 70),
-
-              Image.asset("assets/images/map.jpg"),
-            ],
-          ),
+      appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 228, 234, 245)),
+        
+      body: FlutterMap(
+        mapController: _mapController,
+        options: const MapOptions(
+          initialCenter: LatLng(41.9973, 21.4280),
+          initialZoom: 7,
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: const Color.fromARGB(255, 8, 9, 42),
-        currentIndex: _selectedIndex,
-        onTap: _navigateBottomBar,
-        selectedItemColor: const Color.fromARGB(255, 177, 185, 197),
-        unselectedItemColor: Colors.white,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.location_on),
-            label: "My Location",
+        children: [
+          TileLayer(
+            urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+            userAgentPackageName: 'com.example.airly_app',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.location_city),
-            label: "All",
-          ),
-          BottomNavigationBarItem(icon: Icon(Icons.map), label: "Map"),
+          MarkerLayer(markers: _markers),
         ],
       ),
     );
